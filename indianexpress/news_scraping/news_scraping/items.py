@@ -14,3 +14,4 @@ class NewsScrapingItem(scrapy.Item):
     #text = scrapy.Field()
     synopsis = scrapy.Field()
     tags = scrapy.Field()
+    imagelink = scrapy.Field()

@@ -14,6 +14,7 @@ class NewscrawlSpider(Spider):
     synopsis = '.synopsis'
     headings = 'h1'
     tags = '.storytags a'
+    imagelink = '.size-full'
     
     def parse(self, response):
         print("you are in 1")
@@ -39,6 +40,10 @@ class NewscrawlSpider(Spider):
         for tag in response.css(self.tags).css('::text').extract():
             if(tag is not None):
                 l.add_value('tags', tag)
+        
+        for image in response.css(self.imagelink).css("::attr(src)").extract():
+            if(image is not None):
+                l.add_value('imagelink', image)
 
         yield l.load_item()
 
