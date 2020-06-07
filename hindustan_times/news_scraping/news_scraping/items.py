@@ -13,3 +13,8 @@ class NewsScrapingItem(scrapy.Item):
     heading = scrapy.Field()
     #text = scrapy.Field()
     subheadings = scrapy.Field()
+    imagelink = scrapy.Field()
+    summary = scrapy.Field()
+    tags = scrapy.Field()
+    author = scrapy.Field()
+    date_published = scrapy.Field()
