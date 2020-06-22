@@ -11,11 +11,13 @@ class NewscrawlSpider(Spider):
     paths = ['.more-latest-news .headingfour a','.clearfix .para-txt a','.random-heading a','.new-assembly-elections a','.wclink2','.bigstory-mid-h3 a','.subhead4 a']
     subheadings = ['figcaption','#miwInL23P7y8wYxwF1WiDL_story h2']
     summary = 'h2'
+    topic = '.lok-sabha-elections-cb-sectionmr-15'
     headings = 'h1'
     imagelink = 'figure img'
     tags = '.topic-tags a'
     author = '.author'
     date = '.text-dt'
+    content = '/html/body/div[1]/div[2]/div/div/div[1]/div[1]/div/div[4]//p/text()'
 
     def parse(self, response):
         print("you are in 1")
@@ -23,8 +25,8 @@ class NewscrawlSpider(Spider):
         for path in self.paths:
             for url in response.css(path).css("::attr(href)").extract():
                 if url is not None:
+                    print(url)
                     req = Request(url=url , callback= self.parse_article)
-                    req.meta['proxy'] = "71.42.208.138:3128"
                     yield req
 
         
@@ -33,15 +35,19 @@ class NewscrawlSpider(Spider):
         print("you are in 2")
         
         l = ItemLoader(item = NewsScrapingItem(), response=response)
+
         
+        topic = response.css(self.topic).css('::text').extract_first()
+        l.add_value('topic', topic)
+        
+        for heading in response.css(self.headings).css('::text').extract():
+            if(heading is not None):
+                l.add_value('heading', heading)
+                
         for subheading in self.subheadings:
             for word in response.css(subheading).css('::text').extract():
                 if word is not None:
                     l.add_value('subheadings', word)
-    
-        for heading in response.css(self.headings).css('::text').extract():
-            if(heading is not None):
-                l.add_value('heading', heading)
         #heading can also be done in extract.first()
 
         for image in response.css(self.imagelink).css('::attr(src)').extract():
@@ -57,6 +63,8 @@ class NewscrawlSpider(Spider):
         author = response.css(self.author).css('::text').extract_first()
         l.add_value('author', author)
 
+        for content in response.xpath(self.content).extract():
+            l.add_value('content', content[:5000])
 
         for tag in response.css(self.tags).css('::text').extract():
             if(tag is not None):
