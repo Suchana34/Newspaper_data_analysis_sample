@@ -15,15 +15,16 @@ class NewscrawlSpider(Spider):
     imagelink = '.size-full'
     author = '#written_by1'
     date = '#storycenterbyline span'
-    
+    content = '.full-details p'
+
     def parse(self, response):
         print("you are in 1")
         
         for path in self.paths:
             for url in response.css(path).css("::attr(href)").extract():
                 if url:
+                    #print(url)
                     req = Request(url=url , callback= self.parse_article)
-                    req.meta['proxy'] = "71.42.208.138:3128"
                     yield req
         
 
@@ -53,6 +54,11 @@ class NewscrawlSpider(Spider):
         for image in response.css(self.imagelink).css("::attr(src)").extract():
             if(image is not None):
                 l.add_value('imagelink', image)
+        
+        for text in response.css(self.content).css('::text').extract():
+            if text[:17] == "The Indian Express":
+                break
+            l.add_value('content', text[:1000])
 
         yield l.load_item()
 

@@ -11,7 +11,7 @@ import scrapy
 class NewsScrapingItem(scrapy.Item):
     # define the fields for your item here like:
     heading = scrapy.Field()
-    #text = scrapy.Field()
+    content = scrapy.Field()
     tags = scrapy.Field()
     imagelink = scrapy.Field()
     publish_date = scrapy.Field()

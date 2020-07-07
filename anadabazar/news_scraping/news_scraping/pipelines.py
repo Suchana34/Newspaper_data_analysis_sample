@@ -15,7 +15,7 @@ class NewsScrapingPipeline:
             27017
         )
         db = self.conn['news_paper_data']
-        self.collection = db['anandabazar_tb']
+        self.collection = db['anandabazar2_tb']
     
     def process_item(self, item, spider):
         

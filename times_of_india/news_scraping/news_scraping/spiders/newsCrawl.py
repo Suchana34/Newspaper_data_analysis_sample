@@ -12,6 +12,7 @@ class NewscrawlSpider(Spider):
     tags = ['.IXtDK a', '.trending_block_inner a', '.slideshowbox a']
     headings = 'h1'
     author = '.byline a'
+    content = ['.Normal', '._1_Akb.clearfix', '.content']
     
     def parse(self, response):
         print("you are in 1")
@@ -20,7 +21,6 @@ class NewscrawlSpider(Spider):
             for url in response.css(path).css("::attr(href)").extract():
                 if url is not None:
                     req = Request(url="https://timesofindia.indiatimes.com/" + url , callback= self.parse_article)
-                    req.meta['proxy'] = "71.42.208.138:3128"
                     yield req
         
 
@@ -46,7 +46,10 @@ class NewscrawlSpider(Spider):
         author = response.css(self.author).css('::text').extract_first()
         l.add_value('author', author)
         
-        
+        for i in self.content:
+            for text in response.css(i).css('::text').extract():
+                l.add_value('content', text)
+
         yield l.load_item()
 
 

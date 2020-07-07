@@ -17,8 +17,8 @@ class NewscrawlSpider(Spider):
     tags = '.topic-tags a'
     author = '.author'
     date = '.text-dt'
-    content = '/html/body/div[1]/div[2]/div/div/div[1]/div[1]/div/div[4]//p/text()'
-
+    #content = '/html/body/div[1]/div[2]/div/div/div[1]/div[1]/div/div[4]//p/text()'
+    content = '.storyDetail p'
     def parse(self, response):
         print("you are in 1")
         
@@ -63,7 +63,7 @@ class NewscrawlSpider(Spider):
         author = response.css(self.author).css('::text').extract_first()
         l.add_value('author', author)
 
-        for content in response.xpath(self.content).extract():
+        for content in response.css(self.content).css('::text').extract():
             l.add_value('content', content[:5000])
 
         for tag in response.css(self.tags).css('::text').extract():
